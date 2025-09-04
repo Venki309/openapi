@@ -1,0 +1,15 @@
+description: Internal server error
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          example: PLANT_500
+        message:
+          type: string
+          example: "Internal server error."
+        details:
+          type: string
+          example: "Unexpected error occurred."

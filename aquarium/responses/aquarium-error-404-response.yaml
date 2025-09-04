@@ -1,0 +1,15 @@
+description: Aquarium not found
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          example: AQUARIUM_404
+        message:
+          type: string
+          example: "Aquarium not found."
+        details:
+          type: string
+          example: "No aquarium exists with the provided ID."

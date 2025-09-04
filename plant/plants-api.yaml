@@ -1,0 +1,204 @@
+openapi: 3.0.0
+info:
+  title: Plant Store API
+  description: API for managing plants and plant details.
+tags:
+  - name: Plant Management
+    description: Operations for managing plants
+  - name: Plant Information
+    description: Retrieve plant details and search
+  - name: Plant Care
+    description: Operations for scheduling and tracking plant care activities
+  - name: Plant Inventory
+    description: Operations for managing plant inventory
+paths:
+  /plants:
+    get:
+      summary: Get all plants
+      description: Retrieve a list of all plants in the store.
+      tags:
+        - Plant Information
+      responses:
+        '200':
+          $ref: './responses/plant-list-response.yaml'
+        '500':
+          $ref: './responses/plant-error-response.yaml'
+    post:
+      summary: Add a new plant
+      description: Create a new plant record in the system.
+      tags:
+        - Plant Management
+      requestBody:
+        description: Plant object to be added to the store.
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/plant.yaml'
+      responses:
+        '201':
+          description: Plant created successfully
+        '400':
+          $ref: './responses/plant-error-400-response.yaml'
+        '500':
+          $ref: './responses/plant-error-response.yaml'
+  /plants/{plantId}:
+    get:
+      summary: Get plant details by ID
+      description: Retrieve detailed information about a plant by its ID.
+      tags:
+        - Plant Information
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          description: The ID of the plant to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: './responses/plant-detail-response.yaml'
+        '404':
+          $ref: './responses/plant-error-404-response.yaml'
+        '500':
+          $ref: './responses/plant-error-response.yaml'
+    put:
+      summary: Update plant details
+      description: Update the details of an existing plant by its ID.
+      tags:
+        - Plant Management
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          description: The ID of the plant to update.
+          schema:
+            type: integer
+      requestBody:
+        description: Updated plant object.
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/plant.yaml'
+      responses:
+        '200':
+          description: Plant updated successfully
+        '400':
+          $ref: './responses/plant-error-400-response.yaml'
+        '404':
+          $ref: './responses/plant-error-404-response.yaml'
+        '500':
+          $ref: './responses/plant-error-response.yaml'
+    delete:
+      summary: Delete a plant
+      description: Remove a plant record from the system by its ID.
+      tags:
+        - Plant Management
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          description: The ID of the plant to delete.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Plant deleted successfully
+        '404':
+          $ref: './responses/plant-error-404-response.yaml'
+        '500':
+          $ref: './responses/plant-error-response.yaml'
+  /plants/{plantId}/care:
+    post:
+      summary: Schedule plant care
+      description: Schedule a care activity (watering, fertilizing, etc.) for a specific plant.
+      tags:
+        - Plant Care
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          description: The ID of the plant to schedule care for.
+          schema:
+            type: integer
+      requestBody:
+        description: Care activity details to be scheduled.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: Date of care activity.
+                  example: "2025-09-10"
+                activity:
+                  type: string
+                  description: Type of care activity.
+                  example: "Watering"
+              required:
+                - date
+                - activity
+      responses:
+        '201':
+          description: Plant care scheduled successfully.
+        '400':
+          $ref: './responses/plant-error-400-response.yaml'
+        '404':
+          $ref: './responses/plant-error-404-response.yaml'
+        '500':
+          $ref: './responses/plant-error-response.yaml'
+  /plants/{plantId}/inventory:
+    put:
+      summary: Update plant inventory
+      description: Update the inventory count for a specific plant.
+      tags:
+        - Plant Inventory
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          description: The ID of the plant to update inventory for.
+          schema:
+            type: integer
+      requestBody:
+        description: Inventory details to be updated.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                count:
+                  type: integer
+                  description: New inventory count for the plant.
+                  example: 15
+              required:
+                - count
+      responses:
+        '200':
+          description: Plant inventory updated successfully.
+        '400':
+          $ref: './responses/plant-error-400-response.yaml'
+        '404':
+          $ref: './responses/plant-error-404-response.yaml'
+        '500':
+          $ref: './responses/plant-error-response.yaml'
+components:
+  schemas:
+    Plant:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        species:
+          type: string
+        age:
+          type: integer
+        isIndoor:
+          type: boolean
+          description: Whether the plant is suitable for indoor
+      required:
+        - name
+        - species

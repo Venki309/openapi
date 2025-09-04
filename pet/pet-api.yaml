@@ -1,8 +1,7 @@
 openapi: 3.0.0
 info:
   title: Pet Store API
-  description: API for managing pets of different types
-  version: 1.0.0
+  description: API for managing pets of different types.
 tags:
   - name: Pet Management
     description: Operations for managing pets (add, update, delete)
@@ -10,8 +9,10 @@ tags:
     description: Operations for retrieving pet details and searching for pets
   - name: Adoption
     description: Operations related to pet adoption
-servers:
-  - url: https://api.petstore.com/v1
+  - name: Pet Health
+    description: Operations for scheduling and tracking pet health checks
+  - name: Pet Training
+    description: Operations for managing pet training records
 paths:
   /pets:
     get:
@@ -30,6 +31,7 @@ paths:
       tags:
         - Pet Management
       requestBody:
+        description: Pet object to be added to the store.
         content:
           application/json:
             schema:
@@ -38,7 +40,7 @@ paths:
         '201':
           description: Pet created successfully
         '400':
-          $ref: './responses/pet-error-response.yaml'
+          $ref: './responses/pet-error-400-response.yaml'
         '500':
           $ref: './responses/pet-error-response.yaml'
   /pets/{petId}:
@@ -51,13 +53,14 @@ paths:
         - name: petId
           in: path
           required: true
+          description: The ID of the pet to retrieve.
           schema:
             type: integer
       responses:
         '200':
           $ref: './responses/pet-detail-response.yaml'
         '404':
-          $ref: './responses/pet-error-response.yaml'
+          $ref: './responses/pet-error-404-response.yaml'
         '500':
           $ref: './responses/pet-error-response.yaml'
     put:
@@ -69,9 +72,11 @@ paths:
         - name: petId
           in: path
           required: true
+          description: The ID of the pet to update.
           schema:
             type: integer
       requestBody:
+        description: Updated pet object.
         content:
           application/json:
             schema:
@@ -80,9 +85,9 @@ paths:
         '200':
           description: Pet updated successfully
         '400':
-          $ref: './responses/pet-error-response.yaml'
+          $ref: './responses/pet-error-400-response.yaml'
         '404':
-          $ref: './responses/pet-error-response.yaml'
+          $ref: './responses/pet-error-404-response.yaml'
         '500':
           $ref: './responses/pet-error-response.yaml'
     delete:
@@ -94,13 +99,14 @@ paths:
         - name: petId
           in: path
           required: true
+          description: The ID of the pet to delete.
           schema:
             type: integer
       responses:
         '204':
           description: Pet deleted successfully
         '404':
-          $ref: './responses/pet-error-response.yaml'
+          $ref: './responses/pet-error-404-response.yaml'
         '500':
           $ref: './responses/pet-error-response.yaml'
   /pets/search:
@@ -113,13 +119,14 @@ paths:
         - name: type
           in: query
           required: true
+          description: The type of pet to search for.
           schema:
             type: string
       responses:
         '200':
           $ref: './responses/pet-list-response.yaml'
         '400':
-          $ref: './responses/pet-error-response.yaml'
+          $ref: './responses/pet-error-400-response.yaml'
         '500':
           $ref: './responses/pet-error-response.yaml'
   /pets/{petId}/adopt:
@@ -132,13 +139,100 @@ paths:
         - name: petId
           in: path
           required: true
+          description: The ID of the pet to mark as adopted.
           schema:
             type: integer
       responses:
         '200':
           description: Pet marked as adopted
         '404':
+          $ref: './responses/pet-error-404-response.yaml'
+        '500':
           $ref: './responses/pet-error-response.yaml'
+  /pets/{petId}/health-check:
+    post:
+      summary: Schedule a health check for a pet
+      description: Schedule a health check for a specific pet by its ID.
+      tags:
+        - Pet Health
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The ID of the pet to schedule a health check for.
+          schema:
+            type: integer
+      requestBody:
+        description: Health check details to be scheduled.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: Date of the health check.
+                  example: "2025-09-10"
+                veterinarian:
+                  type: string
+                  description: Name of the veterinarian.
+                  example: "Dr. Smith"
+              required:
+                - date
+                - veterinarian
+      responses:
+        '201':
+          description: Health check scheduled successfully.
+        '400':
+          $ref: './responses/pet-error-400-response.yaml'
+        '404':
+          $ref: './responses/pet-error-404-response.yaml'
+        '500':
+          $ref: './responses/pet-error-response.yaml'
+  /pets/{petId}/training:
+    post:
+      summary: Add a training record for a pet
+      description: Add a new training record for a specific pet by its ID.
+      tags:
+        - Pet Training
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The ID of the pet to add a training record for.
+          schema:
+            type: integer
+      requestBody:
+        description: Training details to be added.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                activity:
+                  type: string
+                  description: Type of training activity.
+                  example: "Obedience"
+                date:
+                  type: string
+                  format: date
+                  description: Date of training.
+                  example: "2025-09-12"
+                trainer:
+                  type: string
+                  description: Name of the trainer.
+                  example: "Jane Doe"
+              required:
+                - activity
+                - date
+      responses:
+        '201':
+          description: Training record added successfully.
+        '400':
+          $ref: './responses/pet-error-400-response.yaml'
+        '404':
+          $ref: './responses/pet-error-404-response.yaml'
         '500':
           $ref: './responses/pet-error-response.yaml'
 

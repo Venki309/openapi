@@ -1,0 +1,20 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 1
+  name:
+    type: string
+    example: "Fern"
+  species:
+    type: string
+    example: "Nephrolepis exaltata"
+  age:
+    type: integer
+    example: 2
+  isIndoor:
+    type: boolean
+    example: true
+required:
+  - name
+  - species

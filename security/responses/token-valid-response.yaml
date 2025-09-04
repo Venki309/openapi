@@ -1,0 +1,12 @@
+description: Token is valid
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          example: true
+        userId:
+          type: integer
+          example: 123

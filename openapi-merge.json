@@ -1,0 +1,29 @@
+{
+  "inputs": [
+    {
+      "inputeFile": "pet/pet-api.yaml",
+      "pathmodification": {
+            "prepend": "/api"
+      }
+    },
+    {
+      "inputeFile": "aquarium/aquarium-api.yaml",
+      "pathmodification": {
+            "prepend": "/api"
+      }
+    },
+    {
+      "inputeFile": "plant/plant-api.yaml",
+      "pathmodification": {
+            "prepend": "/api"
+      }
+    },
+    {
+      "inputeFile": "security/security-api.yaml",
+      "pathmodification": {
+            "prepend": "/api"
+      }
+    }
+  ],
+  "output": "merged-api.yaml"
+}

@@ -1,0 +1,12 @@
+description: Invalid or expired token
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          example: AUTH_401
+        message:
+          type: string
+          example: "Token is invalid or expired."

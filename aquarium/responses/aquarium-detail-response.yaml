@@ -1,0 +1,5 @@
+description: Aquarium details
+content:
+  application/json:
+    schema:
+      $ref: '../schemas/aquarium.yaml'

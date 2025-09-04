@@ -1,0 +1,15 @@
+description: Plant not found
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          example: PLANT_404
+        message:
+          type: string
+          example: "Plant not found."
+        details:
+          type: string
+          example: "No plant exists with the provided ID."

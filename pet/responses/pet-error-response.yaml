@@ -1,0 +1,15 @@
+description: Error response
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          example: PET_001
+        message:
+          type: string
+          example: "An error occurred while processing your request."
+        details:
+          type: string
+          example: "Invalid pet ID provided."

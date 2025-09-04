@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: Security API
+  description: API for authentication and authorization.
+tags:
+  - name: Authentication
+    description: User login and logout
+  - name: Authorization
+    description: Access control operations
+  - name: User Management
+    description: Operations for managing user accounts
+  - name: Audit
+    description: Operations for retrieving audit logs
+paths:
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate a user and return a JWT token if credentials are valid.
+      tags:
+        - Authentication
+      requestBody:
+        description: User credentials for login.
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/login.yaml'
+      responses:
+        '200':
+          $ref: './responses/login-success-response.yaml'
+        '401':
+          $ref: './responses/login-error-401-response.yaml'
+        '500':
+          $ref: './responses/security-error-response.yaml'
+  /auth/logout:
+    post:
+      summary: User logout
+      description: Log out the currently authenticated user.
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: User logged out successfully
+        '401':
+          $ref: './responses/login-error-401-response.yaml'
+        '500':
+          $ref: './responses/security-error-response.yaml'
+  /auth/validate:
+    get:
+      summary: Validate user token
+      description: Validate the provided JWT token for authentication.
+      tags:
+        - Authorization
+      parameters:
+        - name: token
+          in: query
+          required: true
+          description: JWT token to validate.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: './responses/token-valid-response.yaml'
+        '401':
+          $ref: './responses/token-error-401-response.yaml'
+        '500':
+          $ref: './responses/security-error-response.yaml'
+  /users:
+    post:
+      summary: Create user
+      description: Create a new user account in the system.
+      tags:
+        - User Management
+      requestBody:
+        description: User details to create a new account.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Desired username for the new user.
+                  example: "newuser"
+                password:
+                  type: string
+                  description: Password for the new user.
+                  example: "securepassword"
+                email:
+                  type: string
+                  description: Email address of the new user.
+                  example: "user@example.com"
+              required:
+                - username
+                - password
+                - email
+      responses:
+        '201':
+          description: User created successfully.
+        '400':
+          $ref: './responses/security-error-response.yaml'
+        '500':
+          $ref: './responses/security-error-response.yaml'
+  /audit/logs:
+    get:
+      summary: Get audit logs
+      description: Retrieve audit logs for security-related events.
+      tags:
+        - Audit
+      parameters:
+        - name: fromDate
+          in: query
+          required: false
+          description: Start date for filtering logs.
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          required: false
+          description: End date for filtering logs.
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Audit logs retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    event:
+                      type: string
+                      description: Description of the event.
+                      example: "User login"
+                    timestamp:
+                      type: string
+                      format: date-time
+                      description: Time of the event.
+                      example: "2025-09-04T10:15:30Z"
+                    user:
+                      type: string
+                      description: Username associated with the event.
+                      example: "admin"
+        '500':
+          $ref: './responses/security-error-response.yaml'
+components:
+  schemas:
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password

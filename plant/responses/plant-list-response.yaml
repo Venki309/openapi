@@ -1,0 +1,7 @@
+description: List of plants
+content:
+  application/json:
+    schema:
+      type: array
+      items:
+        $ref: '../schemas/plant.yaml'

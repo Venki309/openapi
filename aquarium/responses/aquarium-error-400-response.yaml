@@ -1,0 +1,15 @@
+description: Bad request
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          example: AQUARIUM_400
+        message:
+          type: string
+          example: "Invalid aquarium data."
+        details:
+          type: string
+          example: "Missing required field: size."

@@ -1,0 +1,12 @@
+description: Login successful
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        expiresIn:
+          type: integer
+          example: 3600

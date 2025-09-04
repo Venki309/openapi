@@ -1,0 +1,15 @@
+description: Pet Not Found
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          example: PET_404
+        message:
+          type: string
+          example: "Pet not found."
+        details:
+          type: string
+          example: "No pet exists with the provided ID."

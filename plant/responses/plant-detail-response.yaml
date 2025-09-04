@@ -1,0 +1,5 @@
+description: Plant details
+content:
+  application/json:
+    schema:
+      $ref: '../schemas/plant.yaml'

@@ -1,0 +1,23 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 1
+  name:
+    type: string
+    example: "Ocean Paradise"
+  size:
+    type: string
+    enum: [small, medium, large]
+    example: "medium"
+  waterType:
+    type: string
+    enum: [freshwater, saltwater]
+    example: "freshwater"
+  fishCount:
+    type: integer
+    example: 12
+required:
+  - name
+  - size
+  - waterType

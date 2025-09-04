@@ -1,0 +1,22 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 1
+  name:
+    type: string
+    example: "Buddy"
+  type:
+    type: string
+    enum: [dog, cat, bird, fish, reptile]
+    example: "dog"
+  age:
+    type: integer
+    example: 3
+  isAdopted:
+    type: boolean
+    description: Whether the pet has been adopted
+    example: false
+required:
+  - name
+  - type

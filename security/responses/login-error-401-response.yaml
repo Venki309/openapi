@@ -1,0 +1,12 @@
+description: Unauthorized
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          example: AUTH_401
+        message:
+          type: string
+          example: "Invalid username or password."

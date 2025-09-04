@@ -1,0 +1,278 @@
+openapi: 3.0.0
+info:
+  title: Aquarium Store API
+  description: API for managing aquariums and aquatic animals.
+tags:
+  - name: Aquarium Management
+    description: Operations for managing aquariums
+  - name: Aquarium Information
+    description: Retrieve aquarium details and search
+  - name: Maintenance
+    description: Operations for scheduling and tracking aquarium maintenance
+  - name: Aquatic Animal Management
+    description: Operations for managing aquatic animals in aquariums
+paths:
+  /aquariums:
+    get:
+      summary: Get all aquariums
+      description: Retrieve a list of all aquariums in the store.
+      tags:
+        - Aquarium Information
+      responses:
+        '200':
+          $ref: './responses/aquarium-list-response.yaml'
+        '500':
+          $ref: './responses/aquarium-error-response.yaml'
+    post:
+      summary: Add a new aquarium
+      description: Create a new aquarium record in the system.
+      tags:
+        - Aquarium Management
+      requestBody:
+        description: Aquarium object to be added to the store.
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/aquarium.yaml'
+      responses:
+        '201':
+          description: Aquarium created successfully
+        '400':
+          $ref: './responses/aquarium-error-400-response.yaml'
+        '500':
+          $ref: './responses/aquarium-error-response.yaml'
+  /aquariums/{aquariumId}:
+    get:
+      summary: Get aquarium details by ID
+      description: Retrieve detailed information about an aquarium by its ID.
+      tags:
+        - Aquarium Information
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: './responses/aquarium-detail-response.yaml'
+        '404':
+          $ref: './responses/aquarium-error-404-response.yaml'
+        '500':
+          $ref: './responses/aquarium-error-response.yaml'
+    put:
+      summary: Update aquarium details
+      description: Update the details of an existing aquarium by its ID.
+      tags:
+        - Aquarium Management
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to update.
+          schema:
+            type: integer
+      requestBody:
+        description: Updated aquarium object.
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/aquarium.yaml'
+      responses:
+        '200':
+          description: Aquarium updated successfully
+        '400':
+          $ref: './responses/aquarium-error-400-response.yaml'
+        '404':
+          $ref: './responses/aquarium-error-404-response.yaml'
+        '500':
+          $ref: './responses/aquarium-error-response.yaml'
+    delete:
+      summary: Delete an aquarium
+      description: Remove an aquarium record from the system by its ID.
+      tags:
+        - Aquarium Management
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to delete.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Aquarium deleted successfully
+        '404':
+          $ref: './responses/aquarium-error-404-response.yaml'
+        '500':
+          $ref: './responses/aquarium-error-response.yaml'
+  /aquariums/search:
+    get:
+      summary: Search aquariums by water type
+      description: Find aquariums based on their water type (freshwater or saltwater).
+      tags:
+        - Aquarium Information
+      parameters:
+        - name: waterType
+          in: query
+          required: true
+          description: The type of water to filter aquariums by.
+          schema:
+            type: string
+            enum: [freshwater, saltwater]
+      responses:
+        '200':
+          description: List of aquariums matching the water type.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas/aquarium.yaml'
+        '400':
+          $ref: './responses/aquarium-error-400-response.yaml'
+        '500':
+          $ref: './responses/aquarium-error-response.yaml'
+  /aquariums/{aquariumId}/add-fish:
+    post:
+      summary: Add fish to an aquarium
+      description: Add a specified number of fish to an aquarium by its ID.
+      tags:
+        - Aquarium Management
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to add fish to.
+          schema:
+            type: integer
+      requestBody:
+        description: Number of fish to add.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fishCount:
+                  type: integer
+                  description: Number of fish to add.
+                  example: 5
+              required:
+                - fishCount
+      responses:
+        '200':
+          description: Fish added successfully to the aquarium.
+        '400':
+          $ref: './responses/aquarium-error-400-response.yaml'
+        '404':
+          $ref: './responses/aquarium-error-404-response.yaml'
+        '500':
+          $ref: './responses/aquarium-error-response.yaml'
+  /aquariums/{aquariumId}/maintenance:
+    post:
+      summary: Schedule aquarium maintenance
+      description: Schedule a maintenance activity for a specific aquarium.
+      tags:
+        - Maintenance
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to schedule maintenance for.
+          schema:
+            type: integer
+      requestBody:
+        description: Maintenance details to be scheduled.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                maintenanceType:
+                  type: string
+                  description: The type of maintenance to perform.
+                  example: Water Change
+                scheduledTime:
+                  type: string
+                  format: date-time
+                  description: The date and time when the maintenance is scheduled.
+                  example: '2023-10-10T10:00:00Z'
+              required:
+                - maintenanceType
+                - scheduledTime
+      responses:
+        '201':
+          description: Maintenance scheduled successfully
+        '400':
+          $ref: './responses/aquarium-error-400-response.yaml'
+        '404':
+          $ref: './responses/aquarium-error-404-response.yaml'
+        '500':
+          $ref: './responses/aquarium-error-response.yaml'
+  /aquariums/{aquariumId}/animals:
+    post:
+      summary: Add a new aquatic animal to an aquarium
+      description: Add a new aquatic animal record to a specific aquarium.
+      tags:
+        - Aquatic Animal Management
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to add the animal to.
+          schema:
+            type: integer
+      requestBody:
+        description: Aquatic animal details to be added.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the aquatic animal.
+                  example: "Goldfish"
+                species:
+                  type: string
+                  description: Species of the aquatic animal.
+                  example: "Carassius auratus"
+                age:
+                  type: integer
+                  description: Age of the aquatic animal.
+                  example: 1
+              required:
+                - name
+                - species
+                - age
+      responses:
+        '201':
+          description: Aquatic animal added successfully to the aquarium.
+        '400':
+          $ref: './responses/aquarium-error-400-response.yaml'
+        '404':
+          $ref: './responses/aquarium-error-404-response.yaml'
+        '500':
+          $ref: './responses/aquarium-error-response.yaml'
+components:
+  schemas:
+    Aquarium:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        size:
+          type: string
+          enum: [small, medium, large]
+        waterType:
+          type: string
+          enum: [freshwater, saltwater]
+        fishCount:
+          type: integer
+      required:
+        - name
+        - size
+        - waterType
