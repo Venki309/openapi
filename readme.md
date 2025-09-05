@@ -63,7 +63,7 @@ Example:
 Run the merge command to generate a combined OpenAPI file:
 
 ```
-npx openapi-merge-cli --config merge.json
+npx openapi-merge-cli
 ```
 
 This produces a single [merged-api.yaml](https://github.com/Venki309/openapi/blob/main/merged-api.yaml).
