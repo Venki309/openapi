@@ -1,0 +1,917 @@
+openapi: 3.0.3
+info:
+  title: Unified API
+  description: Merged specification of Pet API, Plant API, Aquarium API, and Security API.
+tags:
+  - name: Pet Management
+    description: 'Operations for managing pets (add, update, delete)'
+  - name: Pet Information
+    description: Operations for retrieving pet details and searching for pets
+  - name: Adoption
+    description: Operations related to pet adoption
+  - name: Pet Health
+    description: Operations for scheduling and tracking pet health checks
+  - name: Pet Training
+    description: Operations for managing pet training records
+  - name: Aquarium Management
+    description: Operations for managing aquariums
+  - name: Aquarium Information
+    description: Retrieve aquarium details and search
+  - name: Maintenance
+    description: Operations for scheduling and tracking aquarium maintenance
+  - name: Aquatic Animal Management
+    description: Operations for managing aquatic animals in aquariums
+  - name: Plant Management
+    description: Operations for managing plants
+  - name: Plant Information
+    description: Retrieve plant details and search
+  - name: Plant Care
+    description: Operations for scheduling and tracking plant care activities
+  - name: Plant Inventory
+    description: Operations for managing plant inventory
+  - name: Authentication
+    description: User logi n and logout
+  - name: Authorization
+    description: Access control operations
+  - name: User Management
+    description: Operations for managing user accounts
+  - name: Audit
+    description: Operations for retrieving audit logs
+
+x-tagGroups:
+- name: Aquarium Services
+  tags:
+    - Aquarium Management
+    - Aquarium Information
+    - Maintenance
+    - Aquatic Animal Management
+- name: Pet Services
+  tags:
+    - Pet Management
+    - Pet Information
+    - Adoption
+    - Pet Health
+    - Pet Training
+- name: Plant Services
+  tags:
+    - Plant Management
+    - Plant Information
+    - Plant Care
+    - Plant Inventory
+- name: Security Services
+  tags:
+    - Authentication
+    - Authorization
+    - User Management
+    - Audit
+
+paths:
+  /api/pets:
+    get:
+      summary: Get all pets
+      description: Retrieve a list of all pets in the store.
+      tags:
+        - Pet Information
+      responses:
+        '200':
+          $ref: ./responses/pet-list-response.yaml
+        '500':
+          $ref: ./responses/pet-error-response.yaml
+    post:
+      summary: Add a new pet
+      description: Create a new pet record in the system.
+      tags:
+        - Pet Management
+      requestBody:
+        description: Pet object to be added to the store.
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/pet.yaml
+      responses:
+        '201':
+          description: Pet created successfully
+        '400':
+          $ref: ./responses/pet-error-400-response.yaml
+        '500':
+          $ref: ./responses/pet-error-response.yaml
+  '/api/pets/{petId}':
+    get:
+      summary: Get pet details by ID
+      description: Retrieve detailed information about a pet by its ID.
+      tags:
+        - Pet Information
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The ID of the pet to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: ./responses/pet-detail-response.yaml
+        '404':
+          $ref: ./responses/pet-error-404-response.yaml
+        '500':
+          $ref: ./responses/pet-error-response.yaml
+    put:
+      summary: Update a pet's details
+      description: Update the details of an existing pet by its ID.
+      tags:
+        - Pet Management
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The ID of the pet to update.
+          schema:
+            type: integer
+      requestBody:
+        description: Updated pet object.
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/pet.yaml
+      responses:
+        '200':
+          description: Pet updated successfully
+        '400':
+          $ref: ./responses/pet-error-400-response.yaml
+        '404':
+          $ref: ./responses/pet-error-404-response.yaml
+        '500':
+          $ref: ./responses/pet-error-response.yaml
+    delete:
+      summary: Delete a pet
+      description: Remove a pet record from the system by its ID.
+      tags:
+        - Pet Management
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The ID of the pet to delete.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Pet deleted successfully
+        '404':
+          $ref: ./responses/pet-error-404-response.yaml
+        '500':
+          $ref: ./responses/pet-error-response.yaml
+  /api/pets/search:
+    get:
+      summary: Search pets by type
+      description: 'Find pets based on their type (e.g., dog, cat).'
+      tags:
+        - Pet Information
+      parameters:
+        - name: type
+          in: query
+          required: true
+          description: The type of pet to search for.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: ./responses/pet-list-response.yaml
+        '400':
+          $ref: ./responses/pet-error-400-response.yaml
+        '500':
+          $ref: ./responses/pet-error-response.yaml
+  '/api/pets/{petId}/adopt':
+    post:
+      summary: Mark a pet as adopted
+      description: Mark a specific pet as adopted in the system.
+      tags:
+        - Adoption
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The ID of the pet to mark as adopted.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pet marked as adopted
+        '404':
+          $ref: ./responses/pet-error-404-response.yaml
+        '500':
+          $ref: ./responses/pet-error-response.yaml
+  '/api/pets/{petId}/health-check':
+    post:
+      summary: Schedule a health check for a pet
+      description: Schedule a health check for a specific pet by its ID.
+      tags:
+        - Pet Health
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The ID of the pet to schedule a health check for.
+          schema:
+            type: integer
+      requestBody:
+        description: Health check details to be scheduled.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: Date of the health check.
+                  example: '2025-09-10'
+                veterinarian:
+                  type: string
+                  description: Name of the veterinarian.
+                  example: Dr. Smith
+              required:
+                - date
+                - veterinarian
+      responses:
+        '201':
+          description: Health check scheduled successfully.
+        '400':
+          $ref: ./responses/pet-error-400-response.yaml
+        '404':
+          $ref: ./responses/pet-error-404-response.yaml
+        '500':
+          $ref: ./responses/pet-error-response.yaml
+  '/api/pets/{petId}/training':
+    post:
+      summary: Add a training record for a pet
+      description: Add a new training record for a specific pet by its ID.
+      tags:
+        - Pet Training
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The ID of the pet to add a training record for.
+          schema:
+            type: integer
+      requestBody:
+        description: Training details to be added.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                activity:
+                  type: string
+                  description: Type of training activity.
+                  example: Obedience
+                date:
+                  type: string
+                  format: date
+                  description: Date of training.
+                  example: '2025-09-12'
+                trainer:
+                  type: string
+                  description: Name of the trainer.
+                  example: Jane Doe
+              required:
+                - activity
+                - date
+      responses:
+        '201':
+          description: Training record added successfully.
+        '400':
+          $ref: ./responses/pet-error-400-response.yaml
+        '404':
+          $ref: ./responses/pet-error-404-response.yaml
+        '500':
+          $ref: ./responses/pet-error-response.yaml
+  /api/aquariums:
+    get:
+      summary: Get all aquariums
+      description: Retrieve a list of all aquariums in the store.
+      tags:
+        - Aquarium Information
+      responses:
+        '200':
+          $ref: ./responses/aquarium-list-response.yaml
+        '500':
+          $ref: ./responses/aquarium-error-response.yaml
+    post:
+      summary: Add a new aquarium
+      description: Create a new aquarium record in the system.
+      tags:
+        - Aquarium Management
+      requestBody:
+        description: Aquarium object to be added to the store.
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/aquarium.yaml
+      responses:
+        '201':
+          description: Aquarium created successfully
+        '400':
+          $ref: ./responses/aquarium-error-400-response.yaml
+        '500':
+          $ref: ./responses/aquarium-error-response.yaml
+  '/api/aquariums/{aquariumId}':
+    get:
+      summary: Get aquarium details by ID
+      description: Retrieve detailed information about an aquarium by its ID.
+      tags:
+        - Aquarium Information
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: ./responses/aquarium-detail-response.yaml
+        '404':
+          $ref: ./responses/aquarium-error-404-response.yaml
+        '500':
+          $ref: ./responses/aquarium-error-response.yaml
+    put:
+      summary: Update aquarium details
+      description: Update the details of an existing aquarium by its ID.
+      tags:
+        - Aquarium Management
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to update.
+          schema:
+            type: integer
+      requestBody:
+        description: Updated aquarium object.
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/aquarium.yaml
+      responses:
+        '200':
+          description: Aquarium updated successfully
+        '400':
+          $ref: ./responses/aquarium-error-400-response.yaml
+        '404':
+          $ref: ./responses/aquarium-error-404-response.yaml
+        '500':
+          $ref: ./responses/aquarium-error-response.yaml
+    delete:
+      summary: Delete an aquarium
+      description: Remove an aquarium record from the system by its ID.
+      tags:
+        - Aquarium Management
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to delete.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Aquarium deleted successfully
+        '404':
+          $ref: ./responses/aquarium-error-404-response.yaml
+        '500':
+          $ref: ./responses/aquarium-error-response.yaml
+  /api/aquariums/search:
+    get:
+      summary: Search aquariums by water type
+      description: Find aquariums based on their water type (freshwater or saltwater).
+      tags:
+        - Aquarium Information
+      parameters:
+        - name: waterType
+          in: query
+          required: true
+          description: The type of water to filter aquariums by.
+          schema:
+            type: string
+            enum:
+              - freshwater
+              - saltwater
+      responses:
+        '200':
+          description: List of aquariums matching the water type.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./schemas/aquarium.yaml
+        '400':
+          $ref: ./responses/aquarium-error-400-response.yaml
+        '500':
+          $ref: ./responses/aquarium-error-response.yaml
+  '/api/aquariums/{aquariumId}/add-fish':
+    post:
+      summary: Add fish to an aquarium
+      description: Add a specified number of fish to an aquarium by its ID.
+      tags:
+        - Aquarium Management
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to add fish to.
+          schema:
+            type: integer
+      requestBody:
+        description: Number of fish to add.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fishCount:
+                  type: integer
+                  description: Number of fish to add.
+                  example: 5
+              required:
+                - fishCount
+      responses:
+        '200':
+          description: Fish added successfully to the aquarium.
+        '400':
+          $ref: ./responses/aquarium-error-400-response.yaml
+        '404':
+          $ref: ./responses/aquarium-error-404-response.yaml
+        '500':
+          $ref: ./responses/aquarium-error-response.yaml
+  '/api/aquariums/{aquariumId}/maintenance':
+    post:
+      summary: Schedule aquarium maintenance
+      description: Schedule a maintenance activity for a specific aquarium.
+      tags:
+        - Maintenance
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to schedule maintenance for.
+          schema:
+            type: integer
+      requestBody:
+        description: Maintenance details to be scheduled.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                maintenanceType:
+                  type: string
+                  description: The type of maintenance to perform.
+                  example: Water Change
+                scheduledTime:
+                  type: string
+                  format: date-time
+                  description: The date and time when the maintenance is scheduled.
+                  example: '2023-10-10T10:00:00Z'
+              required:
+                - maintenanceType
+                - scheduledTime
+      responses:
+        '201':
+          description: Maintenance scheduled successfully
+        '400':
+          $ref: ./responses/aquarium-error-400-response.yaml
+        '404':
+          $ref: ./responses/aquarium-error-404-response.yaml
+        '500':
+          $ref: ./responses/aquarium-error-response.yaml
+  '/api/aquariums/{aquariumId}/animals':
+    post:
+      summary: Add a new aquatic animal to an aquarium
+      description: Add a new aquatic animal record to a specific aquarium.
+      tags:
+        - Aquatic Animal Management
+      parameters:
+        - name: aquariumId
+          in: path
+          required: true
+          description: The ID of the aquarium to add the animal to.
+          schema:
+            type: integer
+      requestBody:
+        description: Aquatic animal details to be added.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the aquatic animal.
+                  example: Goldfish
+                species:
+                  type: string
+                  description: Species of the aquatic animal.
+                  example: Carassius auratus
+                age:
+                  type: integer
+                  description: Age of the aquatic animal.
+                  example: 1
+              required:
+                - name
+                - species
+                - age
+      responses:
+        '201':
+          description: Aquatic animal added successfully to the aquarium.
+        '400':
+          $ref: ./responses/aquarium-error-400-response.yaml
+        '404':
+          $ref: ./responses/aquarium-error-404-response.yaml
+        '500':
+          $ref: ./responses/aquarium-error-response.yaml
+  /api/plants:
+    get:
+      summary: Get all plants
+      description: Retrieve a list of all plants in the store.
+      tags:
+        - Plant Information
+      responses:
+        '200':
+          $ref: ./responses/plant-list-response.yaml
+        '500':
+          $ref: ./responses/plant-error-response.yaml
+    post:
+      summary: Add a new plant
+      description: Create a new plant record in the system.
+      tags:
+        - Plant Management
+      requestBody:
+        description: Plant object to be added to the store.
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/plant.yaml
+      responses:
+        '201':
+          description: Plant created successfully
+        '400':
+          $ref: ./responses/plant-error-400-response.yaml
+        '500':
+          $ref: ./responses/plant-error-response.yaml
+  '/api/plants/{plantId}':
+    get:
+      summary: Get plant details by ID
+      description: Retrieve detailed information about a plant by its ID.
+      tags:
+        - Plant Information
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          description: The ID of the plant to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: ./responses/plant-detail-response.yaml
+        '404':
+          $ref: ./responses/plant-error-404-response.yaml
+        '500':
+          $ref: ./responses/plant-error-response.yaml
+    put:
+      summary: Update plant details
+      description: Update the details of an existing plant by its ID.
+      tags:
+        - Plant Management
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          description: The ID of the plant to update.
+          schema:
+            type: integer
+      requestBody:
+        description: Updated plant object.
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/plant.yaml
+      responses:
+        '200':
+          description: Plant updated successfully
+        '400':
+          $ref: ./responses/plant-error-400-response.yaml
+        '404':
+          $ref: ./responses/plant-error-404-response.yaml
+        '500':
+          $ref: ./responses/plant-error-response.yaml
+    delete:
+      summary: Delete a plant
+      description: Remove a plant record from the system by its ID.
+      tags:
+        - Plant Management
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          description: The ID of the plant to delete.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Plant deleted successfully
+        '404':
+          $ref: ./responses/plant-error-404-response.yaml
+        '500':
+          $ref: ./responses/plant-error-response.yaml
+  '/api/plants/{plantId}/care':
+    post:
+      summary: Schedule plant care
+      description: >-
+        Schedule a care activity (watering, fertilizing, etc.) for a specific
+        plant.
+      tags:
+        - Plant Care
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          description: The ID of the plant to schedule care for.
+          schema:
+            type: integer
+      requestBody:
+        description: Care activity details to be scheduled.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: Date of care activity.
+                  example: '2025-09-10'
+                activity:
+                  type: string
+                  description: Type of care activity.
+                  example: Watering
+              required:
+                - date
+                - activity
+      responses:
+        '201':
+          description: Plant care scheduled successfully.
+        '400':
+          $ref: ./responses/plant-error-400-response.yaml
+        '404':
+          $ref: ./responses/plant-error-404-response.yaml
+        '500':
+          $ref: ./responses/plant-error-response.yaml
+  '/api/plants/{plantId}/inventory':
+    put:
+      summary: Update plant inventory
+      description: Update the inventory count for a specific plant.
+      tags:
+        - Plant Inventory
+      parameters:
+        - name: plantId
+          in: path
+          required: true
+          description: The ID of the plant to update inventory for.
+          schema:
+            type: integer
+      requestBody:
+        description: Inventory details to be updated.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                count:
+                  type: integer
+                  description: New inventory count for the plant.
+                  example: 15
+              required:
+                - count
+      responses:
+        '200':
+          description: Plant inventory updated successfully.
+        '400':
+          $ref: ./responses/plant-error-400-response.yaml
+        '404':
+          $ref: ./responses/plant-error-404-response.yaml
+        '500':
+          $ref: ./responses/plant-error-response.yaml
+  /api/auth/login:
+    post:
+      summary: User login
+      description: Authenticate a user and return a JWT token if credentials are valid.
+      tags:
+        - Authentication
+      requestBody:
+        description: User credentials for login.
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/login.yaml
+      responses:
+        '200':
+          $ref: ./responses/login-success-response.yaml
+        '401':
+          $ref: ./responses/login-error-401-response.yaml
+        '500':
+          $ref: ./responses/security-error-response.yaml
+  /api/auth/logout:
+    post:
+      summary: User logout
+      description: Log out the currently authenticated user.
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: User logged out successfully
+        '401':
+          $ref: ./responses/login-error-401-response.yaml
+        '500':
+          $ref: ./responses/security-error-response.yaml
+  /api/auth/validate:
+    get:
+      summary: Validate user token
+      description: Validate the provided JWT token for authentication.
+      tags:
+        - Authorization
+      parameters:
+        - name: token
+          in: query
+          required: true
+          description: JWT token to validate.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: ./responses/token-valid-response.yaml
+        '401':
+          $ref: ./responses/token-error-401-response.yaml
+        '500':
+          $ref: ./responses/security-error-response.yaml
+  /api/users:
+    post:
+      summary: Create user
+      description: Create a new user account in the system.
+      tags:
+        - User Management
+      requestBody:
+        description: User details to create a new account.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Desired username for the new user.
+                  example: newuser
+                password:
+                  type: string
+                  description: Password for the new user.
+                  example: securepassword
+                email:
+                  type: string
+                  description: Email address of the new user.
+                  example: user@example.com
+              required:
+                - username
+                - password
+                - email
+      responses:
+        '201':
+          description: User created successfully.
+        '400':
+          $ref: ./responses/security-error-response.yaml
+        '500':
+          $ref: ./responses/security-error-response.yaml
+  /api/audit/logs:
+    get:
+      summary: Get audit logs
+      description: Retrieve audit logs for security-related events.
+      tags:
+        - Audit
+      parameters:
+        - name: fromDate
+          in: query
+          required: false
+          description: Start date for filtering logs.
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          required: false
+          description: End date for filtering logs.
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Audit logs retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    event:
+                      type: string
+                      description: Description of the event.
+                      example: User login
+                    timestamp:
+                      type: string
+                      format: date-time
+                      description: Time of the event.
+                      example: '2025-09-04T10:15:30Z'
+                    user:
+                      type: string
+                      description: Username associated with the event.
+                      example: admin
+        '500':
+          $ref: ./responses/security-error-response.yaml
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - dog
+            - cat
+            - bird
+            - fish
+            - reptile
+        age:
+          type: integer
+        isAdopted:
+          type: boolean
+          description: Whether the pet has been adopted
+      required:
+        - name
+        - type
+    Aquarium:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        size:
+          type: string
+          enum:
+            - small
+            - medium
+            - large
+        waterType:
+          type: string
+          enum:
+            - freshwater
+            - saltwater
+        fishCount:
+          type: integer
+      required:
+        - name
+        - size
+        - waterType
+    Plant:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        species:
+          type: string
+        age:
+          type: integer
+        isIndoor:
+          type: boolean
+          description: Whether the plant is suitable for indoor
+      required:
+        - name
+        - species
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password

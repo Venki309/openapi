@@ -1,29 +1,29 @@
 {
   "inputs": [
     {
-      "inputeFile": "pet/pet-api.yaml",
-      "pathmodification": {
+        "inputFile": "pet/pet-api.yaml",
+        "pathModification": {
             "prepend": "/api"
-      }
+        }
     },
     {
-      "inputeFile": "aquarium/aquarium-api.yaml",
-      "pathmodification": {
+        "inputFile": "aquarium/aquarium-api.yaml",
+        "pathModification": {
             "prepend": "/api"
-      }
+        }
     },
     {
-      "inputeFile": "plant/plant-api.yaml",
-      "pathmodification": {
+        "inputFile": "plant/plant-api.yaml",
+        "pathModification": {
             "prepend": "/api"
-      }
+        }
     },
     {
-      "inputeFile": "security/security-api.yaml",
-      "pathmodification": {
+        "inputFile": "security/security-api.yaml",
+        "pathModification": {
             "prepend": "/api"
-      }
+        }
     }
-  ],
-  "output": "merged-api.yaml"
+],
+"output": "merged-api.yaml"
 }
