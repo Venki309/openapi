@@ -32,7 +32,7 @@ redocly build-docs aquarium-api.yaml -o aquarium-api.html
 ```
 Repeat this for every source YAML file to check for errors.
 
-## Step 3: Create a merge.json File
+## Create a merge.json File
 
 To merge multiple API definitions, you need a [merge.json](https://github.com/Venki309/openapi/blob/main/openapi-merge.json) configuration file.
 
