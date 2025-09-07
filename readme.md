@@ -4,37 +4,47 @@ This guide walks you through the process of turning individual and merged OpenAP
 
 ## Prerequisites
 
-Before you start, make sure you have the following installed on your system:
+Before you start,  install the following
 
-- **Node.js** (latest LTS recommended)  
+- **Node.js** (latest recommended)  
 - **Redocly CLI** (`npm install -g @redocly/cli`)  
 - **openapi-merge-cli** (`npm install -g openapi-merge-cli`)  
 
+## Steps
+
+Follow these steps to convert the single or multiple YAML files to a clean HTML file.
+
+1. [Review API Definitions](#review-api-definitions)  
+2. [Convert Individual YAML Files to HTML](#convert-individual-yaml-files-to-html)  
+3. [Create a merge.json File](#create-a-mergejson-file)  
+4. [Merge the API Files](#merge-the-api-files)  
+5. [Organize the Table of Contents](#organize-the-table-of-contents)  
+6. [Build the Final HTML](#build-the-final-html)  
 
 ## Review API Definitions
 
-Carefully check each OpenAPI YAML file:
+Review each OpenAPI YAML file to ensure accuracy:
 
-- Ensure summaries, descriptions, and response messages are grammatically correct and clear.  
+- Verify that summaries, descriptions, and response messages are grammatically correct and clear.  
 - Confirm that each file strictly follows the **OpenAPI specification**. Otherwise, Redocly will throw validation errors.
 
 **Note:** Run `redocly lint my-api.yaml` to catch specification issues early.  
 
-Check [OpenAPI repository](https://github.com/Venki309/openapi) for demo source files.
+Check the [OpenAPI repository](https://github.com/Venki309/openapi) for demo source files.
 
 ## Convert Individual YAML Files to HTML
 
-For each API file, run the Redocly build command:
+Convert each YAML file to HTML to validate the format and content:
 
 ```bash
 redocly build-docs pet-api.yaml -o pet-api.html
 redocly build-docs aquarium-api.yaml -o aquarium-api.html
 ```
-Repeat this for every source YAML file to check for errors.
+Repeat this for every source YAML file to check for errors and fix them before continuing.
 
 ## Create a merge.json File
 
-To merge multiple API definitions, you need a [merge.json](https://github.com/Venki309/openapi/blob/main/openapi-merge.json) configuration file.
+To merge multiple API definitions, create a [merge.json](https://github.com/Venki309/openapi/blob/main/openapi-merge.json) configuration file.
 
 Example:
 
@@ -60,13 +70,12 @@ Example:
 
 ## Merge the API Files
 
-Run the merge command to generate a combined OpenAPI file:
-
+Run the following merge command to generate a combined OpenAPI YAML file.
 ```
 npx openapi-merge-cli
 ```
 
-This produces a single [merged-api.yaml](https://github.com/Venki309/openapi/blob/main/merged-api.yaml).
+See the [merged-api.yaml](https://github.com/Venki309/openapi/blob/main/merged-api.yaml) for reference.
 
 ## Organize the Table of Contents
 
@@ -90,16 +99,16 @@ After merging, structure your documentation for easy navigation:
       - Equipment
     ```
 
-- Copy the **responses** and **schemas** folders (and their contents) next to the merged-api.yaml file. This ensures that references resolve correctly, else you might get errors while converting to HTML file.
+- Copy the **responses** and **schemas** folders (and their contents) into the same directory as the merged-api.yaml file. This ensures that references resolve correctly, else you might get errors while converting to HTML file.
 
 ## Build the Final HTML
 
-Finally, convert the merged YAML file into a single HTML documentation.
+Run the following command to generate a single HTML file from the merged YAML file.
 
 ```
 redocly build-docs input-file.yaml -o output-file.html
 ```
 
-You now have a clean, consolidated [HTML](https://venki309.github.io/openapi/) view of all your APIs.
+You now have a clean, consolidated [HTML](https://venki309.github.io/openapi/unified-api.html) view of all your APIs.
 
 
